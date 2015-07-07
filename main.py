@@ -2,49 +2,80 @@
 # -*- coding: utf-8 -*-
 
 
-import datetime
 import os
+import datetime
 
 
 def main():
-    columns = int(os.popen('stty size', 'r').read().split()[1])
-    date = str(datetime.date.today())
-    date = date.replace('-', '')
-    listdir = os.listdir()
-    if any(date in f for f in listdir):
+    '''
+    This program creates a today's journal with a formated day's date and a
+    given title. If that's already done (just now or today), it opens the file
+    with a here-given software to be editted.
+    '''
+
+    # software for opening the text file
+    software = 'vim'
+
+    # number of columns in the opened terminal window
+    #columns = int(os.popen('stty size', 'r').read().split()[1])
+
+    # program start
+    date = str(datetime.date.today())  # taking today's date
+    date = date.replace('-', '')       # passing it to
+    listdir = os.listdir()             # taking list of the current's dir
+
+    # checking if there is already a file for today
+    if any(date in file_name for file_name in listdir):
+        # taking the file name and extracting it's title
         fileName = next(f for f in listdir if date in f)
         title = getTitle(fileName)
-        print('Title:'.center(columns))
-        print(title.center(columns))
-        rename = input('Retitle (Y / [ENTER]): ')
-        if any(rename == y for y in ['y', 'Y']):
-            clear(5)
-            newFileName = getFileName(date)
+
+        # printing the title centralizedly
+        print('Title: \"%s\"\n' % (title))
+
+        # asking for a new title
+        newTitle = input('New title or [ENTER]: ')
+
+        # if the user wants a new title, rename the ruling file
+        if newTitle != '':
+            newFileName = getFileName(date, newTitle)
             os.rename(fileName, newFileName)
             fileName = newFileName
+
+    # if it's the first program running time, ask for a title and create a new
+    # document with the due file name; something like this:
+    # "YYYYMMDD - Title"
     else:
-        fileName = getFileName(date)
+        title = input('Title: ')
+        fileName = getFileName(date, title)
         file = open(fileName, 'w')
         file.close()
     clear()
-    cmd = 'vim "%s"' % (fileName)
-    os.system(cmd)
+
+    # openning today's file with the above-chosen software
+    os.system('%s "%s"' % (software, fileName))
     clear()
 
 
-def getFileName(date):
-    name = input('Title: ')
-    name = name.capitalize()
-    if name == '':
-        sep = ''
-    else:
+def getFileName(date, title):
+    '''
+    Returns a modeled file name for the date and name given
+    '''
+    title = title.capitalize()  # turning the name into a title
+
+    # if name is not chosen, don't put a separator after the date
+    sep = ''
+    if title != '':
         sep = ' - '
-    return(date + sep + name + '.jr')
+    return(date + sep + title + '.jr')
 
 
 def getTitle(fileName):
-    li = len('YYYYMMDD - ')
-    lf = -len('.jr')
+    '''
+    Extracts the title from a given file name
+    '''
+    li = 11  # len('YYYYMMDD - ')
+    lf = -3  # -len('.jr')
     title = fileName[li:lf]
     return(title)
 
