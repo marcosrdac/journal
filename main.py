@@ -16,9 +16,6 @@ def main():
     # software for opening the text file
     software = 'vim'
 
-    # number of columns in the opened terminal window
-    #columns = int(os.popen('stty size', 'r').read().split()[1])
-
     # program start
     date = str(datetime.date.today())  # taking today's date
     date = date.replace('-', '')       # passing it to
