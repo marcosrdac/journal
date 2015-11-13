@@ -64,7 +64,7 @@ def getFileName(date, title):
     sep = ''
     if title != '':
         sep = ' - '
-    return(date + sep + title + '.jr')
+    return(date + sep + title + '.md')
 
 
 def getTitle(fileName):
@@ -72,7 +72,7 @@ def getTitle(fileName):
     Extracts the title from a given file name
     '''
     li = 11  # len('YYYYMMDD - ')
-    lf = -3  # -len('.jr')
+    lf = -3  # -len('.md')
     title = fileName[li:lf]
     return(title)
 
